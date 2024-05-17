@@ -1,0 +1,49 @@
+English to Hindi Sequence-to-Sequence Translation
+
+Overview
+This repository contains code for training a sequence-to-sequence model to translate English sentences to Hindi. The model architecture is based on an encoder-decoder framework with an attention mechanism.
+
+Dataset
+The dataset consists of English-Hindi parallel sentences collected from various sources. It has been preprocessed and split into train, validation, and test sets.
+
+Model Architecture
+The model architecture comprises an encoder and a decoder.
+
+Encoder
+The encoder converts input sequences into a fixed-size context vector, capturing the input sentence's semantic information. It utilizes recurrent neural networks (RNNs) with options for different types such as GRU, LSTM, or simple RNN. The encoder processes the input sequence word by word, updating its internal state at each step, and outputs a context vector that represents the entire input sequence.
+
+Decoder
+The decoder generates the output sequence based on the context vector obtained from the encoder and previously generated words. It also employs RNNs, and similar to the encoder, supports different types of RNNs. The decoder's output at each time step is conditioned not only on the current input but also on the context vector representing the entire input sequence. This allows the decoder to focus on different parts of the input sequence while generating the output.
+
+Training
+Training the model involves optimizing it to minimize the cross-entropy loss between the predicted and actual target sequences. We use the Adam optimizer with a learning rate of 0.001. During training, the model iterates through the training dataset, adjusting its parameters to improve performance. The training process is monitored using metrics such as loss and accuracy.
+
+Evaluation
+We evaluate the model's performance using metrics such as token accuracy and word accuracy on the validation and test sets. Token accuracy measures the percentage of correctly predicted tokens in the output sequence, while word accuracy measures the percentage of completely correct output sequences. Additionally, we visualize the attention mechanism to understand how the model attends to different parts of the input sequence while generating the output.
+
+Usage
+To use the model, follow these steps:
+
+Preprocess your dataset and split it into train, validation, and test sets.
+Set the hyperparameters for the model, such as hidden size, batch size, number of layers, and learning rate.
+Train the model using the training set and monitor its performance on the validation set.
+Evaluate the trained model on the test set to assess its performance.
+Optionally, visualize the attention mechanism to gain insights into the model's behavior.
+
+Examples
+Here are some examples of how to use the provided code:
+
+train.py: This script trains the sequence-to-sequence model on the training dataset.
+evaluate.py: This script evaluates the trained model on the validation or test dataset and computes accuracy metrics.
+visualize_attention.py: This script visualizes the attention mechanism for a given input-output pair, allowing you to see how the model attends to different parts of the input sequence.
+
+Requirements
+Python 3.x
+PyTorch
+Wandb (for logging training metrics)
+
+Author
+Abhijeet Kumar
+
+License
+This project is licensed under the MIT License.
