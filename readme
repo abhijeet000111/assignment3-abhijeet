@@ -1,49 +1,93 @@
-English to Hindi Sequence-to-Sequence Translation
+Vanilla Seq2Seq and Attention-based Seq2Seq Model
 
-Overview
-This repository contains code for training a sequence-to-sequence model to translate English sentences to Hindi. The model architecture is based on an encoder-decoder framework with an attention mechanism.
+This repository contains the implementation of vanilla Sequence-to-Sequence (Seq2Seq) and attention-based Seq2Seq models using PyTorch. The project utilizes the Aksharantar dataset for training, validating, and testing the models. Additionally, it includes hyperparameter tuning using Weights & Biases (W&B).
+
+Table of Contents
+1. Installation
+2. Dataset
+3. Model Architecture
+4. Training
+5. Evaluation
+6. Hyperparameter Tuning
+7. Usage
+8. Acknowledgements
+9. License
+
+Installation
+To get started, clone this repository and install the required dependencies:
+
+git clone https://github.com/abhijeet000111/cs6910-assignment3-abhijeet.git
+cd vanilla-attention-seq2seq
+pip install -r requirements.txt
 
 Dataset
-The dataset consists of English-Hindi parallel sentences collected from various sources. It has been preprocessed and split into train, validation, and test sets.
+The dataset used in this project is the Aksharantar dataset, which contains parallel corpus data. The dataset can be downloaded using gdown and unzipped as follows:
+
+import gdown
+
+# Google Drive file URL
+url = 'https://drive.google.com/uc?export=download&id=16yBIEtMjkb-8pmiHOk84YaLXpHrX25cW'
+output_file = 'my_aksharantar_dataset_sampled.zip'
+# Download the file
+gdown.download(url, output_file, quiet=False)
+
+!unzip my_aksharantar_dataset_sampled.zip
+
+The dataset is split into training, validation, and test sets located in the aksharantar_sampled/hin directory.
 
 Model Architecture
-The model architecture comprises an encoder and a decoder.
 
 Encoder
-The encoder converts input sequences into a fixed-size context vector, capturing the input sentence's semantic information. It utilizes recurrent neural networks (RNNs) with options for different types such as GRU, LSTM, or simple RNN. The encoder processes the input sequence word by word, updating its internal state at each step, and outputs a context vector that represents the entire input sequence.
+The encoder is a recurrent neural network (RNN) that processes the input sequence and outputs a context vector. The implementation supports GRU, LSTM, and vanilla RNN architectures.
 
 Decoder
-The decoder generates the output sequence based on the context vector obtained from the encoder and previously generated words. It also employs RNNs, and similar to the encoder, supports different types of RNNs. The decoder's output at each time step is conditioned not only on the current input but also on the context vector representing the entire input sequence. This allows the decoder to focus on different parts of the input sequence while generating the output.
+The decoder is also an RNN that generates the output sequence from the context vector produced by the encoder. Similar to the encoder, the decoder supports GRU, LSTM, and vanilla RNN architectures.
+
+Attention Mechanism
+The attention mechanism is implemented using Bahdanau attention. It helps the decoder focus on different parts of the input sequence at each step, improving translation accuracy.
 
 Training
-Training the model involves optimizing it to minimize the cross-entropy loss between the predicted and actual target sequences. We use the Adam optimizer with a learning rate of 0.001. During training, the model iterates through the training dataset, adjusting its parameters to improve performance. The training process is monitored using metrics such as loss and accuracy.
+The training process includes the following steps:
+1. Data Preparation: The dataset is preprocessed and converted into tensors.
+2. Model Initialization: The encoder and decoder models are initialized.
+3. Training Loop: The models are trained over several epochs with the specified hyperparameters.
+4. Validation: The models are validated on the validation set after each epoch.
+
+Example Training Command
+
+python train.py --train_path aksharantar_sampled/hin/hin_train.csv --val_path aksharantar_sampled/hin/hin_valid.csv --test_path aksharantar_sampled/hin/hin_test.csv
 
 Evaluation
-We evaluate the model's performance using metrics such as token accuracy and word accuracy on the validation and test sets. Token accuracy measures the percentage of correctly predicted tokens in the output sequence, while word accuracy measures the percentage of completely correct output sequences. Additionally, we visualize the attention mechanism to understand how the model attends to different parts of the input sequence while generating the output.
+The evaluation process involves generating translations for random sentences from the dataset and comparing them with the ground truth. The evaluation function prints the input, target, and output sequences for subjective quality assessment.
+
+Example Evaluation Command
+
+python evaluate.py --model_path models/seq2seq_model.pth
+
+Hyperparameter Tuning
+Hyperparameter tuning is performed using Weights & Biases (W&B). The configuration space for hyperparameters is defined, and a sweep is created to find the best hyperparameters.
+
+Example Hyperparameter Tuning Command
+
+wandb sweep sweep_config.yaml
+wandb agent yourusername/projectname/sweepid
 
 Usage
-To use the model, follow these steps:
 
-Preprocess your dataset and split it into train, validation, and test sets.
-Set the hyperparameters for the model, such as hidden size, batch size, number of layers, and learning rate.
-Train the model using the training set and monitor its performance on the validation set.
-Evaluate the trained model on the test set to assess its performance.
-Optionally, visualize the attention mechanism to gain insights into the model's behavior.
+Training with W&B
+To train the model with W&B, run the following command:
 
-Examples
-Here are some examples of how to use the provided code:
+python train_wandb.py
 
-train.py: This script trains the sequence-to-sequence model on the training dataset.
-evaluate.py: This script evaluates the trained model on the validation or test dataset and computes accuracy metrics.
-visualize_attention.py: This script visualizes the attention mechanism for a given input-output pair, allowing you to see how the model attends to different parts of the input sequence.
+Evaluating the Model
+To evaluate the model, use the following command:
 
-Requirements
-Python 3.x
-PyTorch
-Wandb (for logging training metrics)
+python evaluate.py --model_path path_to_your_trained_model.pth
 
-Author
-Abhijeet Kumar
+Acknowledgements
+This project is based on the Aksharantar dataset and uses PyTorch for model implementation. Special thanks to the creators of the dataset and the PyTorch community for their valuable resources and support.
+
+Feel free to contribute to this project by creating issues or submitting pull requests. Your feedback and contributions are highly appreciated!
 
 License
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the LICENSE file for more details.
